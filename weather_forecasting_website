@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://images.app.goo.gl/c9GwxXG14Z1RFsCA8'); /* Placeholder image */
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007BFF; /* Blue color */
+        }
+
+        label, input, button {
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Weather Forecast</h1>
+        <label for="city">Enter city name:</label>
+        <input type="text" id="city">
+        <button onclick="fetchWeather()">Get Weather</button>
+        <div id="weatherInfo"></div>
+    </div>
+
+    <script>
+        async function fetchWeather() {
+            const city = document.getElementById('city').value;
+
+            if (!city) {
+                alert('Please enter a city name');
+                return;
+            }
+
+            const apiKey = 'd9720c060664ca042ecf9173dfe0963f'; // Replace with your Weatherstack API key
+            const apiUrl = `http://api.weatherstack.com/current?access_key=${apiKey}&query=${city}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error.info);
+                    return;
+                }
+
+                const weatherInfo = `
+                    <h2>${data.location.name}, ${data.location.country}</h2>
+                    <p>Temperature: ${data.current.temperature}°C</p>
+                    <p>Weather: ${data.current.weather_descriptions[0]}</p>
+                    <img src="${data.current.weather_icons[0]}" alt="Weather Icon" width="50">
+                `;
+
+                document.getElementById('weatherInfo').innerHTML = weatherInfo;
+            } catch (error) {
+                console.log(error);
+                alert('An error occurred while fetching data');
+            }
+        }
+    </script>
+</body>
+
+</html>
